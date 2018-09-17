@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "linker.h"
 
+//two pass linker
+//Ben Haderle
+//9 17 2018
+
 definition * symbolTable = 0;
 
 int addToBack(definition ** headPointer, definition * toAdd){
@@ -10,7 +14,7 @@ int addToBack(definition ** headPointer, definition * toAdd){
 		return 1;
 	}
 	else{
-		definition * last = (* headPointer)->next;
+		definition * last = * headPointer;
 		while(last->next != NULL){
 			last = last->next;
 		}
@@ -26,6 +30,9 @@ int main(){
 	int baseAdresses[moduleCount];
 	int highestAbsoluteAddressPointer = 0;
 
+	//first pass
+	//determine base address for each module
+	//determine absolute address for each symbol (construct symbol table)
 	int i;
 	for(i = 0; i < moduleCount; i ++){
 		baseAdresses[i] = highestAbsoluteAddressPointer;
@@ -41,12 +48,33 @@ int main(){
 			scanf("%s", &(d->name));
 			scanf("%d", &(d->absoluteAddress));
 			d->absoluteAddress += highestAbsoluteAddressPointer;
+			d->next = NULL;
 			addToBack(&symbolTable, d);
 		}
 
+		//handling use list
+		scanf("%*d", &numPairs);
+		scanf("%*[^\n]s"); //use list is useless on first pass
 		
+
+		//handling instructions
+		int numInstructions = 0;
+		scanf("%d", &numInstructions);
+
+		//adding numInstrutctions to high pointer
+		highestAbsoluteAddressPointer += numInstructions;
+		//printf("%d\n", highestAbsoluteAddressPointer);
+
+		
+		char str[100];
+		scanf("%[^\n]s", &str);
+		printf("%s\n", str);	
 	}
-	
+/*
+	char str[100];
+	scanf("%s", &str);
+	printf("%s", str);*/
+
 	return 0;
 }
 
